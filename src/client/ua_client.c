@@ -159,7 +159,7 @@ processAsyncResponse(UA_Client *client, UA_UInt32 requestId, const UA_NodeId *re
         return UA_STATUSCODE_BADREQUESTHEADERINVALID;
 
     /* Allocate the response */
-    void *response = UA_alloca(ac->responseType->memSize);
+    UA_STACKARRAY(UA_Byte, response, ac->responseType->memSize);
 
     /* Verify the type of the response */
     const UA_DataType *responseType = ac->responseType;
@@ -372,7 +372,7 @@ void
 UA_Client_AsyncService_cancel(UA_Client *client, AsyncServiceCall *ac,
                               UA_StatusCode statusCode) {
     /* Create an empty response with the statuscode */
-    void *resp = UA_alloca(ac->responseType->memSize);
+    UA_STACKARRAY(UA_Byte, resp, ac->responseType->memSize);
     UA_init(resp, ac->responseType);
     ((UA_ResponseHeader*)resp)->serviceResult = statusCode;
 
